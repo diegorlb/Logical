@@ -1,64 +1,20 @@
-import { Associativity, getAssociativity, getOperatorType, getPrecedence, OperatorType } from './operators'
-import { TokenStack } from './stack'
+import { Associativity, getAssociativity, getOperatorType, getPrecedence, OperatorType, } from './operators'
+import { TokenStack, } from './stack'
 import { BracketToken, OperatorToken, PropositionToken, Token, } from './token'
-import * as Util from './util'
 
-export class Lexer {
-  constructor() {
+export class Parser {
 
-  }
-
-  public getTokens(source: string): Array<Token> {
-    let tokens: Array<Token> = []
-    let cursor = 0
-
-    while (cursor < source.length) {
-      let char = source[cursor]
-      if (Util.isWhitespaceChar(char)) {
-        cursor++
-        continue
-      }
-
-      if (Util.isPropChar(char)) {
-        let buffer = []
-        while (Util.isPropChar(char)) {
-          buffer.push(char)
-          char = source[++cursor]
-        }
-        tokens.push(new PropositionToken(buffer.join('')))
-        continue
-      }
-
-      if (Util.isOperChar(char)) {
-        let buffer = []
-        while (Util.isOperChar(char)) {
-          buffer.push(char)
-          char = source[++cursor]
-        }
-        tokens.push(new OperatorToken(buffer.join('')))
-        continue
-      }
-
-      if (Util.isBracketChar(char)) {
-        tokens.push(new BracketToken(char))
-        
-        cursor++
-        continue
-      }
-
-      throw Error(`Found unknown character: ${char}`)
-    }
-
-    return tokens
-  }
-
-  public shuntingYard(tokens: Array<Token>) {
-    const output = []
+  //Implemented pseudocode from https://www.andr.mu/logs/the-shunting-yard-algorithm/ with some modifications
+  public execShunting(tokens: Array<Token>): [Array<Token>, Array<string>] {
+    const output: Array<Token> = []
+    const propositions: Array<string> = []
     const stack = new TokenStack()
 
     for (const token of tokens) {
       if (token instanceof PropositionToken) {
         output.push(token)
+        const name = token.getName()
+        if (!propositions.includes(name)) propositions.push(name)
         continue
       }
 
@@ -67,8 +23,8 @@ export class Lexer {
         const associativity = getAssociativity(token)
 
         if (operator === OperatorType.Unary) {
-          if (associativity === Associativity.Left) stack.push(token)   //Prefix unary
-          if (associativity === Associativity.Right) output.push(token) //Postfix unary
+          if (associativity === Associativity.Left) stack.push(token)   //Prefix unary operator
+          if (associativity === Associativity.Right) output.push(token) //Postfix unary operator
           continue
         }
 
@@ -116,6 +72,6 @@ export class Lexer {
       output.push(stack.pop())
     }
 
-    console.log(output, stack)
+    return [output, propositions]
   }
 }

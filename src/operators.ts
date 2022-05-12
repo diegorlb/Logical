@@ -1,4 +1,4 @@
-import { OperatorToken } from "./token";
+import { OperatorToken, } from './token'
 
 export enum OperatorType {
   Unary,
@@ -27,7 +27,7 @@ export function getAssociativity(token: OperatorToken): Associativity {
   const operator = token.getOperator()
 
   if ([
-   '¬' 
+    '¬'
   ].includes(operator)) return Associativity.Left
 
   if ([
@@ -39,4 +39,23 @@ export function getAssociativity(token: OperatorToken): Associativity {
 
 export function getPrecedence(token: OperatorToken): number {
   return 0
+}
+
+export function evaluateUnaryExpression(token: OperatorToken, operand: boolean) {
+  const operator = token.getOperator()
+
+  switch (operator) {
+    case '¬': return !operand
+    default: throw Error('Unknown unary expression')
+  }
+}
+
+export function evaluateBinaryExpression(token: OperatorToken, left: boolean, right: boolean) {
+  const operator = token.getOperator()
+
+  switch (operator) {
+    case 'AND': return left && right
+    case 'OR': return left || right
+    default: throw Error('Unknown unary expression')
+  }
 }

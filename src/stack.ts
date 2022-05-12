@@ -1,4 +1,4 @@
-import { BracketToken, OperatorToken, Token } from './token'
+import { BracketToken, OperatorToken, Token, } from './token'
 
 export class TokenStack {
   protected stack: Array<Token>
