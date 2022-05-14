@@ -3,8 +3,8 @@ import * as yargs from 'yargs'
 import * as fs from 'fs'
 
 import { Lexer, } from './lexer'
-import { Truthtable } from './truthtable'
-import { Parser } from './parser'
+import { Truthtable, } from './truthtable'
+import { Parser, } from './parser'
 
 yargs
   .scriptName('logical')
@@ -36,7 +36,7 @@ yargs
 
     const [shunted, propositions] = parser.execShunting(lexer.getTokens(source.toString()))
     const combinations = truthtable.generatePropositionsTable(propositions)
-
+    
     const result = combinations.map((combination) => ({
       ...combination,
       'Output': truthtable.evaluateExpression(shunted, combination),
@@ -44,6 +44,6 @@ yargs
 
     console.table(result)
   })
-  .catch(() => {
-
+  .catch((error) => {
+    console.error(error)
   })

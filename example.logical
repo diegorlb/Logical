@@ -1,1 +1,1 @@
-(p OR q) AND r
+((p => q) AND (p => r)) = p => (q AND r)

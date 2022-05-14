@@ -7,7 +7,7 @@ export function isPropChar(char: string): boolean {
 }
 
 export function isOperChar(char: string): boolean {
-  return (typeof char === 'string') && (/[A-Z\=\-\>\¬]/.test(char))
+  return (typeof char === 'string') && (/[A-Z\=\-\>\|\&]/.test(char))
 }
 
 export function isBracketChar(char: string): boolean {
